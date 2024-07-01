@@ -31,21 +31,21 @@ export async function sendVerificationEmail({ email, code }: { email: string, co
         return false;
     }
 }
-export async function sendEmail({ email, code }: { email: string, code: string }) {
-    try {
-        const { data, error } = await resend.emails.send({
-            from: 'Acme <onboarding@resend.dev>',
-            to: ['delivered@resend.dev'],
-            subject: 'Hello world',
-            html: `<p>Your verification code is <strong>${code}</strong></p>`,
-        });
+// export async function sendEmail({ email, code }: { email: string, code: string }) {
+//     try {
+//         const { data, error } = await resend.emails.send({
+//             from: 'Acme <onboarding@resend.dev>',
+//             to: ['delivered@resend.dev'],
+//             subject: 'Hello world',
+//             html: `<p>Your verification code is <strong>${code}</strong></p>`,
+//         });
 
-        if (error) {
-            return { error: error }
-        }
+//         if (error) {
+//             return false;
+//         }
 
-        return { data };
-    } catch (error) {
-        return { error: error };
-    }
-}
+//         return true;
+//     } catch (error) {
+//         return false
+//     }
+// }

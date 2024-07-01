@@ -18,9 +18,10 @@ import { Input } from "@/components/ui/input"
 import { toast } from '../ui/use-toast';
 import SectionHeader from '../section-header/SectionHeader';
 import { useAction } from 'next-safe-action/hooks';
-import { sendCode } from '@/actions/verify.action';
+import { generateCode, sendCode } from '@/actions/verify.action';
 import { Loader2 } from 'lucide-react';
 import { errorMessages } from '@/helpers/error-messages';
+import { sendEmail } from '@/lib/send-emails';
 
 export interface StepProps {
     next: () => void;
@@ -66,7 +67,23 @@ const SendEmail: React.FC<StepProps> = ({ next, prev }) => {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         console.log(values);
-        execute(values);
+        // execute(values);
+        const data = await generateCode(values.email);
+        // console.log("DATA: ", data);
+
+        if (data.error) {
+            return toast({ title: data.title, variant: "destructive", description: data?.error })
+        }
+        const email = await sendEmail({ email: values.email, code: data?.token as string });
+        // console.log("EMAIL: ", email);
+
+        if (!email) {
+            return toast({ title: "Error", variant: "destructive", description: errorMessages.SERVER_ERROR.error })
+        }
+        toast({ title: "Email sent", description: "Please check your email to verify your account." })
+        new Promise((resolve) => setTimeout(resolve, 3000))
+
+        return next();
 
     }
     return (

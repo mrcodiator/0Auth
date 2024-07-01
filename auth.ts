@@ -13,7 +13,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         signIn: "/sign-in",
         verifyRequest: "/verify",
     },
-    // debug: process.env.NODE_ENV === 'development',
+    debug: process.env.NODE_ENV === 'development',
     // logger: {
     //     error: (code, ...message) => console.error(code, message),
     //     warn: (code, ...message) => console.warn(code, message),

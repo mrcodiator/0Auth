@@ -2,7 +2,7 @@
 import { auth, signIn } from "@/auth";
 import prisma from "@/lib/db";
 import { actionClient } from "@/lib/safe-action";
-import { sendEmail, sendVerificationEmail } from "@/lib/verify-email";
+import { sendVerificationEmail } from "@/lib/verify-email";
 import { changePasswordSchema } from "@/validation/schema";
 import { hash } from "bcryptjs";
 import * as z from "zod";
@@ -20,6 +20,7 @@ export const sendCode = actionClient
                 id: true,
             },
         });
+
         if (!user) {
             return errorMessages.USER_NOT_FOUND
         }
@@ -34,9 +35,8 @@ export const sendCode = actionClient
             },
         })
 
-        // const sendToken = await sendVerificationEmail({ email, code: newToken.token });
-        const sendToken = await sendEmail({ email, code: newToken.token });
-        if (sendToken.error) {
+        const sendToken = await sendVerificationEmail({ email, code: newToken.token });
+        if (sendToken) {
             return errorMessages.SERVER_ERROR
         }
 
@@ -117,3 +117,29 @@ export const changePassword = actionClient
         }
         return successMessages.PASSWORD_CHANGED
     })
+
+export const generateCode = async (email: string) => {
+    const user = await prisma.user.findUnique({
+        where: { email },
+        select: {
+            id: true,
+        },
+    });
+
+    if (!user) {
+        return { ...errorMessages.USER_NOT_FOUND, token: null }
+    }
+
+    const token = Math.floor(100000 + Math.random() * 900000);
+    console.log(token);
+
+    const newToken = await prisma.verificationToken.create({
+        data: {
+            token: String(token),
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            userId: user.id,
+        },
+    })
+
+    return { ...successMessages.VERIFICATION_CODE_SENT, token: newToken.token }
+}
