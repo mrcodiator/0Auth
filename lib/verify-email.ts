@@ -13,7 +13,7 @@ var transport = nodemailer.createTransport({
     }
 });
 
-export async function sendVerificationEmail({ email, code }: { email: string, code: string }) {
+export async function sendEmailWithMailtrap({ email, code }: { email: string, code: string }) {
     try {
         // send mail with defined transport object
         const info = await transport.sendMail({
@@ -31,21 +31,32 @@ export async function sendVerificationEmail({ email, code }: { email: string, co
         return false;
     }
 }
-// export async function sendEmail({ email, code }: { email: string, code: string }) {
-//     try {
-//         const { data, error } = await resend.emails.send({
-//             from: 'Acme <onboarding@resend.dev>',
-//             to: ['delivered@resend.dev'],
-//             subject: 'Hello world',
-//             html: `<p>Your verification code is <strong>${code}</strong></p>`,
-//         });
+export async function sendEmailWithResend({ email, code }: { email: string, code: string }) {
+    try {
+        const { data, error } = await resend.emails.send({
+            from: 'Acme <onboarding@resend.dev>',
+            to: ['delivered@resend.dev'],
+            subject: 'Hello world',
+            html: `<p>Your verification code is <strong>${code}</strong></p>`,
+        });
 
-//         if (error) {
-//             return false;
-//         }
+        console.log("DATA: ", data);
+        console.log("ERROR: ", error);
 
-//         return true;
-//     } catch (error) {
-//         return false
-//     }
-// }
+        if (error) {
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        return false
+    }
+}
+
+
+
+
+
+
+
+

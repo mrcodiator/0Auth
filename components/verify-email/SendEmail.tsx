@@ -3,6 +3,7 @@ import React from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import emailjs from "@emailjs/browser";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -21,7 +22,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { generateCode, sendCode } from '@/actions/verify.action';
 import { Loader2 } from 'lucide-react';
 import { errorMessages } from '@/helpers/error-messages';
-import { sendEmail } from '@/lib/send-emails';
+
 
 export interface StepProps {
     next: () => void;
@@ -29,11 +30,10 @@ export interface StepProps {
 }
 
 const formSchema = z.object({
-    email: z.string().min(2, {
-        message: "Email must be at least 2 characters.",
-    }).email({
-        message: "Invalid email address",
-    }),
+    email: z.string()
+        .email({
+            message: "Invalid email address",
+        }),
 })
 
 const SendEmail: React.FC<StepProps> = ({ next, prev }) => {
@@ -66,15 +66,17 @@ const SendEmail: React.FC<StepProps> = ({ next, prev }) => {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values);
+        // console.log(values);
         // execute(values);
+
+
         const data = await generateCode(values.email);
         // console.log("DATA: ", data);
 
         if (data.error) {
             return toast({ title: data.title, variant: "destructive", description: data?.error })
         }
-        const email = await sendEmail({ email: values.email, code: data?.token as string });
+        const email = await sendEmailWithEmailJS({ email: values.email, code: data?.token as string });
         // console.log("EMAIL: ", email);
 
         if (!email) {
@@ -86,6 +88,7 @@ const SendEmail: React.FC<StepProps> = ({ next, prev }) => {
         return next();
 
     }
+
     return (
         <div>
             <SectionHeader
@@ -118,4 +121,33 @@ const SendEmail: React.FC<StepProps> = ({ next, prev }) => {
 }
 
 export default SendEmail
+
+
+export async function sendEmailWithEmailJS({ email, code }: { email: string, code: string }) {
+    try {
+        console.log("PUBLIC_KEY: ", process.env.NEXT_PUBLIC_KEY);
+
+        const templateParams = {
+            email: email,
+            message: `Your verification code is ${code}`,
+        };
+
+
+        const response = await emailjs.send(
+            process.env.NEXT_PUBLIC_SERVICE_ID || "",
+            process.env.NEXT_PUBLIC_TEMPLATE_ID || "",
+            templateParams,
+            {
+                publicKey: process.env.NEXT_PUBLIC_KEY || "",
+                // privateKey: process.env.PRIVATE_KEY || "",
+            }
+        );
+
+        console.log('SUCCESS!', response.status, response.text);
+        return true;
+    } catch (err) {
+        console.log('FAILED...', err);
+        return false;
+    }
+}
 

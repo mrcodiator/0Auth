@@ -2,12 +2,12 @@
 import { auth, signIn } from "@/auth";
 import prisma from "@/lib/db";
 import { actionClient } from "@/lib/safe-action";
-import { sendVerificationEmail } from "@/lib/verify-email";
 import { changePasswordSchema } from "@/validation/schema";
 import { hash } from "bcryptjs";
 import * as z from "zod";
 import { errorMessages } from "@/helpers/error-messages";
 import { successMessages } from "@/helpers/success-message";
+import { sendEmailWithMailtrap, sendEmailWithResend } from "@/lib/verify-email";
 
 export const sendCode = actionClient
     .schema(z.object({
@@ -35,8 +35,10 @@ export const sendCode = actionClient
             },
         })
 
-        const sendToken = await sendVerificationEmail({ email, code: newToken.token });
-        if (sendToken) {
+        const sendToken = await sendEmailWithMailtrap({ email, code: newToken.token });
+        // const sendToken = await sendEmailWithResend({ email, code: newToken.token });
+
+        if (!sendToken) {
             return errorMessages.SERVER_ERROR
         }
 
