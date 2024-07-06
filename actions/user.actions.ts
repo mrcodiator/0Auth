@@ -54,7 +54,7 @@ export const authenticate = actionClient
         });
         // console.log("CHECK_USER: ", user);
 
-        if (!user) return errorMessages.USER_EXISTS;
+        if (!user) return errorMessages.USER_NOT_FOUND;
 
         const comparePassword = await compare(password, user.password as string)
 

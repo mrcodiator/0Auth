@@ -19,7 +19,6 @@ import { Input } from "@/components/ui/input"
 import SectionHeader from '../section-header/SectionHeader'
 import SocialAuth from '../social-auth/SocialAuth'
 import Link from 'next/link'
-import { sendVerificationEmail } from '@/lib/verify-email'
 import { toast } from '../ui/use-toast'
 import { signInSchema } from '@/validation/schema'
 import { useAction } from 'next-safe-action/hooks'
@@ -41,12 +40,15 @@ const SignIn = () => {
                 if (data.type === ACCOUNT_NOT_VERIFIED.type) {
                     toast({ title: data.title, variant: "destructive", description: data?.error })
                     router.push("/verify")
+                } else {
+                    toast({ title: data.title, variant: "destructive", description: data?.error })
                 }
-                toast({ title: data.title, variant: "destructive", description: data?.error })
             }
-            toast({ title: "Signed In", description: "You are now signed in." })
-            new Promise((resolve) => setTimeout(resolve, 3000))
-            router.push("/")
+            if (data?.success) {
+                toast({ title: "Signed In", description: "You are now signed in." })
+                new Promise((resolve) => setTimeout(resolve, 3000))
+                router.push("/")
+            }
         },
         onError: (data) => {
             console.error("Error: ", data)
