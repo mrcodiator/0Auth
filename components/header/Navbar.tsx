@@ -11,7 +11,7 @@ const Navbar = async () => {
     const session = await auth()
 
     return (
-        <div className="border-b border-b">
+        <div className="border-b">
             <div className='container flex items-center justify-between px-5 py-4'>
                 <div className='flex items-center'>
                     <Link href="/" className="text-xl font-semibold">0Auth</Link>

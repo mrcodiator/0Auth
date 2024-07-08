@@ -31,7 +31,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({ name, email, image }) => {
                     </div>
                     <div>
                         <Link href={"/profile/edit"}>
-                            <Button size={"icon"} variant={"light"} className=" rounded-full">
+                            <Button size={"icon"} variant={"outline"} className=" rounded-full">
                                 <NotebookPen className="h-4 w-4" />
                             </Button>
                         </Link>
@@ -46,7 +46,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({ name, email, image }) => {
             </CardContent>
             <CardFooter className=" w-full flex justify-center md:justify-start items-center gap-3">
                 <Link href={"/verify"}>
-                    <Button variant={"light"}>Change Password</Button>
+                    <Button variant={"outline"}>Change Password</Button>
                 </Link>
                 <SignOut />
 

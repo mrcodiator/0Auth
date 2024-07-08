@@ -101,7 +101,7 @@ const ChangePassword: React.FC<StepProps> = ({ next, prev }) => {
                     />
                     <div className=' flex justify-end gap-2'>
                         <Link href={"/"}>
-                            <Button variant={"light"} >
+                            <Button variant={"outline"} >
                                 Cancel
                             </Button>
                         </Link>

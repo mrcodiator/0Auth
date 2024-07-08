@@ -16,7 +16,7 @@ const HeroSection = () => {
                     <Button size={"lg"}>Sign Up</Button>
                 </Link>
                 <Link href="/sign-in">
-                    <Button size={"lg"} variant="light">
+                    <Button size={"lg"} variant="outline">
                         Sign In
                     </Button>
                 </Link>

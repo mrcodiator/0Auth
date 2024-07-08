@@ -3,7 +3,6 @@ import { IoLogoFacebook, IoLogoGithub, IoLogoGoogle } from "react-icons/io5"
 import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
 import { signIn } from '@/auth'
-import { doSocialLogin } from '@/actions/user.actions'
 import { redirect } from 'next/navigation'
 
 const SocialAuth = () => {
@@ -15,12 +14,12 @@ const SocialAuth = () => {
             </div>
             <div className="flex space-x-4 justify-center">
                 <form action="">
-                    <Button size="icon" className=' rounded-full' variant="light" type='submit'>
+                    <Button size="icon" className=' rounded-full' variant="ghost" type='submit'>
                         <IoLogoFacebook className="h-5 w-5" />
                     </Button>
                 </form>
                 <form action="">
-                    <Button size="icon" className=' rounded-full' variant="light" type='submit'>
+                    <Button size="icon" className=' rounded-full' variant="ghost" type='submit'>
                         <IoLogoGithub className="h-5 w-5 " />
                     </Button>
                 </form>
@@ -32,7 +31,7 @@ const SocialAuth = () => {
                         // return redirect("/")
                     }}
                 >
-                    <Button size="icon" className=' rounded-full' variant="light">
+                    <Button size="icon" className=' rounded-full' variant="ghost">
                         <IoLogoGoogle className="h-5 w-5" />
                     </Button>
                 </form>
